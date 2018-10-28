@@ -1,0 +1,14 @@
+{
+  "name": "Lambda 関数名",
+  "description": "Slack へ料金通知",
+  "region": "Lambda のあるリージョン",
+  "handler": "Lambda のハンドル名(コンソールから確認)",
+  "role": "arn:aws:iam::〜(作成したロール)",
+  "timeout": 300,
+  "memory": 128,
+  "variables": {
+    "SLACK_POST_URL": "https://hooks.slack.com/〜",
+    "SLACK_CHANNEL": "#〜",
+    "TZ": "Asia/Tokyo"
+  }
+}
