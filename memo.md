@@ -33,7 +33,12 @@
 - [AWS の Lambda のタイムゾーンを UTC から JST(東京)に変更 - Qiita](https://qiita.com/seisyu1985/items/2f3af4188a61dccf44b2)
 - [Python の UTC ⇔ JST、文字列(UTC) ⇒ JST の変換とかのメモ - Qiita](https://qiita.com/yoppe/items/4260cf4ddde69287a632)
 
-### Discord について
+### Slack Webhooks について
+
+- [Incoming Webhooks | Slack](
+  https://api.slack.com/incoming-webhooks)
+
+### Discord Webhooks について
 
 - [Intro to Webhooks – Discord](
   https://support.discordapp.com/hc/en-us/articles/228383668-Intro-to-Webhooks)

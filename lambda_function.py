@@ -58,27 +58,39 @@ def get_color_str(cost):
         return "good"
 
 
-def post_to_slack(message):
+def post_to_slack(cost, jst_now):
+
+    message = '{}までのAWS料金は ＄{}です'.format(jst_now.strftime(date_format), cost)
+    post_data = {
+        "channel": slack_channel,
+        "attachments": [
+            {
+                "text": message,
+                "color": get_color_str(cost)
+            }
+        ]
+    }
+
     try:
-        requests.post(slack_post_url, data=json.dumps(message))
-        # aws の python では 3.6 なのに f 文字列は怒られる
-        # logger.info(f'Message posted to {message["channel"]}')
-        logger.info('Message posted to {}'.format(message["channel"]))
+        response = requests.post(slack_post_url, data=json.dumps(post_data),
+                                 headers={'Content-Type': "application/json"})
+        response.raise_for_status()
     except requests.exceptions.RequestException as e:
-        # logger.error(f'Request failed: {e}')
         logger.info('Request failed: {}'.format(e))
 
 
-def post_to_discord(message):
+def post_to_discord(cost, jst_now):
+
+    message = '{}までのAWS料金は ＄{}です'.format(jst_now.strftime(date_format), cost)
+    post_data = {
+        "content": message
+    }
+
     try:
-        response = requests.post(discord_post_url, data=json.dumps(message),
-                      headers={'Content-Type': "application/json"})
+        response = requests.post(discord_post_url, data=json.dumps(post_data),
+                                 headers={'Content-Type': "application/json"})
         response.raise_for_status()
-        # aws の python では 3.6 なのに f 文字列は怒られる
-        # logger.info(f'Message posted to {message["channel"]}')
-        # logger.info('Message posted to {}'.format(message["content"]))
     except requests.exceptions.RequestException as e:
-        # logger.error(f'Request failed: {e}')
         logger.info('Request failed: {}'.format(e))
 
 
@@ -87,23 +99,6 @@ def lambda_handler(event, context):
     utc_now = datetime.utcnow()
     cost, res_utc_now = get_cost(utc_now)
     jst_now = res_utc_now.astimezone(local_zone)
-    color = get_color_str(cost)
-    message = '{}までのAWS料金は ＄{}です'.format(jst_now.strftime(date_format), cost)
-    logger.info('Message: {}'.format(message))
 
-    # slack_message = {
-    #     "channel": slack_channel,
-    #     "attachments": [
-    #         {
-    #             "text": message,
-    #             "color": color
-    #         }
-    #     ]
-    # }
-
-    # post_to_slack(slack_message)
-
-    discord_message = {
-        "content": message
-    }
-    post_to_discord(discord_message)
+    post_to_slack(cost, jst_now)
+    post_to_discord(cost, jst_now)
