@@ -32,3 +32,27 @@
 
 - [AWS の Lambda のタイムゾーンを UTC から JST(東京)に変更 - Qiita](https://qiita.com/seisyu1985/items/2f3af4188a61dccf44b2)
 - [Python の UTC ⇔ JST、文字列(UTC) ⇒ JST の変換とかのメモ - Qiita](https://qiita.com/yoppe/items/4260cf4ddde69287a632)
+
+### Discord について
+
+- [Intro to Webhooks – Discord](
+  https://support.discordapp.com/hc/en-us/articles/228383668-Intro-to-Webhooks)
+- [Discord - Developer Documentation](
+  https://discordapp.com/developers/docs/resources/webhook#execute-webhook)
+- [DiscordにWebhookでいろいろ投稿する - Qiita](
+  https://qiita.com/Eai/items/1165d08dce9f183eac74)
+
+### Python の Requests について
+
+discord への POST を試している際、エラーは起こっていないのにメッセージが届かない現象あり
+
+→[DiscordにWebhookでいろいろ投稿する - Qiita](
+https://qiita.com/Eai/items/1165d08dce9f183eac74) で言及されているように、header にて Content-Type: application/json を指定する必要があるのだが、指定してないと 400 エラーが帰ってくるものの例外にならないため気付かなかった(正常終了したように見えた)
+
+→400系/500系の場合のみ例外を発生させる方法があった
+
+- [PythonモジュールRequestsのHTTPステータスコードについて ｜ DevelopersIO](
+  https://dev.classmethod.jp/cloud/python-requests-status-code/)
+- [Quickstart — Requests 2.20.1 documentation](
+  http://docs.python-requests.org/en/latest/user/quickstart/#response-status-codes)
+

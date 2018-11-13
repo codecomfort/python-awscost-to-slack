@@ -9,6 +9,7 @@
   "variables": {
     "SLACK_POST_URL": "https://hooks.slack.com/〜",
     "SLACK_CHANNEL": "#〜",
-    "TZ": "Asia/Tokyo"
+    "TZ": "Asia/Tokyo",
+    "DISCORD_POST_URL": "https://discordapp.com/api/webhooks/〜"
   }
 }

@@ -18,6 +18,7 @@ logger.setLevel(logging.INFO)
 # Slack の設定
 slack_post_url = os.environ["SLACK_POST_URL"]
 slack_channel = os.environ["SLACK_CHANNEL"]
+discord_post_url = os.environ["DISCORD_POST_URL"]
 
 
 def get_cost(date):
@@ -32,10 +33,10 @@ def get_cost(date):
         Namespace='AWS/Billing',
         MetricName='EstimatedCharges',
         Dimensions=[
-          {
-            'Name': 'Currency',
-            'Value': 'USD'
-          }
+            {
+                'Name': 'Currency',
+                'Value': 'USD'
+            }
         ],
         StartTime=date - timedelta(days=1),
         EndTime=date,
@@ -68,6 +69,19 @@ def post_to_slack(message):
         logger.info('Request failed: {}'.format(e))
 
 
+def post_to_discord(message):
+    try:
+        response = requests.post(discord_post_url, data=json.dumps(message),
+                      headers={'Content-Type': "application/json"})
+        response.raise_for_status()
+        # aws の python では 3.6 なのに f 文字列は怒られる
+        # logger.info(f'Message posted to {message["channel"]}')
+        # logger.info('Message posted to {}'.format(message["content"]))
+    except requests.exceptions.RequestException as e:
+        # logger.error(f'Request failed: {e}')
+        logger.info('Request failed: {}'.format(e))
+
+
 # 名前は Lambda の設定名に合わせる
 def lambda_handler(event, context):
     utc_now = datetime.utcnow()
@@ -75,15 +89,21 @@ def lambda_handler(event, context):
     jst_now = res_utc_now.astimezone(local_zone)
     color = get_color_str(cost)
     message = '{}までのAWS料金は ＄{}です'.format(jst_now.strftime(date_format), cost)
+    logger.info('Message: {}'.format(message))
 
-    slack_message = {
-        "channel": slack_channel,
-        "attachments": [
-          {
-            "text": message,
-            "color": color
-          }
-        ]
+    # slack_message = {
+    #     "channel": slack_channel,
+    #     "attachments": [
+    #         {
+    #             "text": message,
+    #             "color": color
+    #         }
+    #     ]
+    # }
+
+    # post_to_slack(slack_message)
+
+    discord_message = {
+        "content": message
     }
-
-    post_to_slack(slack_message)
+    post_to_discord(discord_message)
