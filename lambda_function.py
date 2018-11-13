@@ -77,10 +77,20 @@ def post_to_slack(cost, jst_now):
     except requests.exceptions.RequestException as e:
         logger.info('Request failed: {}'.format(e))
 
+def get_emoji(cost):
+    float_cost = float(cost)
+    if float_cost >= 50.0:
+        return ":cry:"
+    elif float_cost > 30.0:
+        return ":sweat:"
+    else:
+        return ":smile:"
+
 
 def post_to_discord(cost, jst_now):
 
-    message = '{}までのAWS料金は ＄{}です'.format(jst_now.strftime(date_format), cost)
+    emoji = get_emoji(cost)
+    message = '{} {}までのAWS料金は ＄{}です'.format(emoji, jst_now.strftime(date_format), cost)
     post_data = {
         "content": message
     }
@@ -99,5 +109,5 @@ def lambda_handler(event, context):
     cost, res_utc_now = get_cost(utc_now)
     jst_now = res_utc_now.astimezone(local_zone)
 
-    post_to_slack(cost, jst_now)
+    # post_to_slack(cost, jst_now)
     post_to_discord(cost, jst_now)
