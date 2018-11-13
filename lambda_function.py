@@ -62,7 +62,6 @@ def post_to_slack(cost, jst_now):
 
     message = '{}までのAWS料金は ＄{}です'.format(jst_now.strftime(date_format), cost)
     post_data = {
-        "channel": slack_channel,
         "attachments": [
             {
                 "text": message,
